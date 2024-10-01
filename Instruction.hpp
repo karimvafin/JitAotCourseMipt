@@ -1,6 +1,8 @@
 #ifndef INSTRUCTION_HPP
 #define INSTRUCTION_HPP
 
+#include <vector>
+
 enum class OpCode {
     ADD,
     SUB,
@@ -10,7 +12,8 @@ enum class OpCode {
     RET,
     CAST,
     CMP,
-    MOV
+    MOV,
+    PHI
 };
 
 enum class InstType {
@@ -18,16 +21,27 @@ enum class InstType {
     S64,
     U32,
     U64,
-    B
+    B,
+    VOID
 };
 
 
 struct Instruction {
     Instruction* prev_;
     Instruction* next_;
-    int id_;
-    bool isPhi_;
+    size_t id_;
+    InstType type_;
     OpCode opCode_;
+    std::vector<size_t> inputs_;
+    std::vector<size_t> users_;
+
+    Instruction(size_t id, InstType type, OpCode opCode, const std::vector<size_t> inputs = std::vector<size_t>{}, const std::vector<size_t> users = std::vector<size_t>{});
+
+    void addInput(size_t id);
+    void addInput(const std::vector<size_t>& ids);
+
+    void addUser(size_t id);
+    void addUser(const std::vector<size_t>& ids);
 
 };
 
