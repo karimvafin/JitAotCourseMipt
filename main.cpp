@@ -52,6 +52,8 @@ void testGraphFactorial() {
     bb3->addInstruction(inst30);
 
     /** Add predecessors and successors to basic blocks */
+    bb0->addSuccessor(bb1);
+
     bb1->addPredecessor(bb0);
     bb1->addSuccessor(bb2);
     bb1->addSuccessor(bb3);
@@ -69,6 +71,15 @@ void testGraphFactorial() {
     assert((bb1->getInstructionIds() == std::vector<size_t>{3, 4, 5}));
     assert((bb2->getInstructionIds() == std::vector<size_t>{6, 7, 8, 9}));
     assert((bb3->getInstructionIds() == std::vector<size_t>{10}));
+
+    assert((bb0->preds_ == std::vector<BasicBlock*>{}));
+    assert((bb0->succs_ == std::vector<BasicBlock*>{bb1}));
+    assert((bb1->preds_ == std::vector<BasicBlock*>{bb0}));
+    assert((bb1->succs_ == std::vector<BasicBlock*>{bb2, bb3}));
+    assert((bb2->preds_ == std::vector<BasicBlock*>{bb1}));
+    assert((bb2->succs_ == std::vector<BasicBlock*>{bb1}));
+    assert((bb3->preds_ == std::vector<BasicBlock*>{bb1}));
+    assert((bb3->succs_ == std::vector<BasicBlock*>{}));
     
     delete graph;
     delete bb0; delete bb1; delete bb2; delete bb3;

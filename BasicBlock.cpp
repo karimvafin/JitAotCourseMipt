@@ -38,14 +38,14 @@ void BasicBlock::addInstruction(const std::vector<Instruction*>& insts) {
 }
 
 void BasicBlock::addPredecessor(BasicBlock* pred) {
-    if (preds_.size() == 2) {
-        std::cout << "Basic Block cannot contain more than 2 preds!" << std::endl;
-        return;
-    }
     preds_.push_back(pred);
 }
 
 void BasicBlock::addSuccessor(BasicBlock* succ) {
+    if (succs_.size() == 2) {   
+        std::cout << "Basic Block cannot contain more than 2 succs!" << std::endl;
+        return;
+    }
     succs_.push_back(succ);
 }
 
