@@ -2,15 +2,17 @@
 
 #include "Graph.hpp"
 
+using namespace Compiler;
+
 void testGraphFactorial() {
     /** Graph construction */
     Graph* graph = new Graph();
 
     /** Basic Blocks construction */
-    BasicBlock* bb0 = new BasicBlock(graph); // start
-    BasicBlock* bb1 = new BasicBlock(graph); // cmp
-    BasicBlock* bb2 = new BasicBlock(graph); // mult
-    BasicBlock* bb3 = new BasicBlock(graph); // ret
+    BasicBlock* bb0 = new BasicBlock(0, graph); // start
+    BasicBlock* bb1 = new BasicBlock(1, graph); // cmp
+    BasicBlock* bb2 = new BasicBlock(2, graph); // mult
+    BasicBlock* bb3 = new BasicBlock(3, graph); // ret
 
     /** Instructions construction */
     Instruction* inst00 = new Instruction(0, InstType::U64, OpCode::MOV);  // res1 = 1
@@ -46,22 +48,18 @@ void testGraphFactorial() {
     inst22->addUser(3);
 
     /** Add instructions to basic blocks */
-    bb0->addInstruction({inst00, inst01, inst02});
-    bb1->addInstruction({inst10, inst11, inst12});
-    bb2->addInstruction({inst20, inst21, inst22, inst23});
-    bb3->addInstruction(inst30);
+    bb0->addInstructionToEnd({inst00, inst01, inst02});
+    bb1->addInstructionToEnd({inst10, inst11, inst12});
+    bb2->addInstructionToEnd({inst20, inst21, inst22, inst23});
+    bb3->addInstructionToEnd(inst30);
 
     /** Add predecessors and successors to basic blocks */
-    bb0->addSuccessor(bb1);
+    bb0->addSuccessor(bb1, true);
 
-    bb1->addPredecessor(bb0);
-    bb1->addSuccessor(bb2);
-    bb1->addSuccessor(bb3);
+    bb1->addSuccessor(bb2, true);
+    bb1->addSuccessor(bb3, false);
 
-    bb2->addPredecessor(bb1);
-    bb2->addSuccessor(bb1);
-
-    bb3->addPredecessor(bb1);
+    bb2->addSuccessor(bb1, true);
 
     /** Add basic blocks to graph */
     graph->addBasicBlock({bb0, bb1, bb2, bb3});
@@ -73,13 +71,14 @@ void testGraphFactorial() {
     assert((bb3->getInstructionIds() == std::vector<size_t>{10}));
 
     assert((bb0->preds_ == std::vector<BasicBlock*>{}));
-    assert((bb0->succs_ == std::vector<BasicBlock*>{bb1}));
-    assert((bb1->preds_ == std::vector<BasicBlock*>{bb0}));
-    assert((bb1->succs_ == std::vector<BasicBlock*>{bb2, bb3}));
+    assert((bb0->firstSuccs_ == bb1));
+    assert((bb1->preds_ == std::vector<BasicBlock*>{bb0, bb2}));
+    assert((bb1->firstSuccs_ == bb2));
+    assert((bb1->secondSuccs_ == bb3));
     assert((bb2->preds_ == std::vector<BasicBlock*>{bb1}));
-    assert((bb2->succs_ == std::vector<BasicBlock*>{bb1}));
+    assert((bb2->firstSuccs_ == bb1));
     assert((bb3->preds_ == std::vector<BasicBlock*>{bb1}));
-    assert((bb3->succs_ == std::vector<BasicBlock*>{}));
+    assert((bb3->firstSuccs_ == nullptr));
     
     delete graph;
     delete bb0; delete bb1; delete bb2; delete bb3;

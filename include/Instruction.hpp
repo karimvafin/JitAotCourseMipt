@@ -3,6 +3,8 @@
 
 #include <vector>
 
+namespace Compiler {
+
 enum class OpCode {
     ADD,
     SUB,
@@ -27,8 +29,6 @@ enum class InstType {
 
 
 struct Instruction {
-    Instruction* prev_;
-    Instruction* next_;
     size_t id_;
     InstType type_;
     OpCode opCode_;
@@ -44,5 +44,7 @@ struct Instruction {
     void addUser(const std::vector<size_t>& ids);
 
 };
+
+}  // namespace Compiler
 
 #endif  // INSTRUCTION_HPP

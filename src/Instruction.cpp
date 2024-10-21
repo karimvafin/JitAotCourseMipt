@@ -1,5 +1,7 @@
 #include "Instruction.hpp"
 
+namespace Compiler {
+
 Instruction::Instruction(size_t id, InstType type, OpCode opCode, const std::vector<size_t> inputs, const std::vector<size_t> users) : id_(id), type_(type), opCode_(opCode), inputs_(inputs), users_(users) {}  
 
 void Instruction::addInput(size_t id) {
@@ -21,3 +23,5 @@ void Instruction::addUser(const std::vector<size_t>& ids) {
         users_.push_back(id);
     }
 }
+
+}  // namespace Compiler
