@@ -15,6 +15,7 @@ void testGraphFactorial() {
     BasicBlock* bb3 = new BasicBlock(3, graph); // ret
 
     /** Instructions construction */
+    Instruction* inst0  = new Instruction(11, InstType::S32, OpCode::PRM);
     Instruction* inst00 = new Instruction(0, InstType::U64, OpCode::MOV);  // res1 = 1
     Instruction* inst01 = new Instruction(1, InstType::U64, OpCode::MOV);  // i1 = 2
     Instruction* inst02 = new Instruction(2, InstType::U64, OpCode::CAST); // (u64)n1
@@ -31,24 +32,16 @@ void testGraphFactorial() {
     Instruction* inst30 = new Instruction(10, InstType::U64, OpCode::RET); // return res3
 
     /** Add inputs */
-    inst10->addInput({1, 8});
-    inst11->addInput({3, 2});
-    inst20->addInput({0, 7});
-    inst21->addInput({6, 3});
-    inst22->addInput(3);
-    inst30->addInput(6);
-
-    /** Add users */
-    inst00->addUser(6);
-    inst01->addUser(3);
-    inst02->addUser(4);
-    inst10->addUser({4, 7, 8});
-    inst20->addUser({7, 10});
-    inst21->addUser(6);
-    inst22->addUser(3);
+    inst02->addInput(inst0);
+    inst10->addInput({inst01, inst22});
+    inst11->addInput({inst10, inst02});
+    inst20->addInput({inst00, inst21});
+    inst21->addInput({inst20, inst10});
+    inst22->addInput(inst10);
+    inst30->addInput(inst20);
 
     /** Add instructions to basic blocks */
-    bb0->addInstructionToEnd({inst00, inst01, inst02});
+    bb0->addInstructionToEnd({inst0, inst00, inst01, inst02});
     bb1->addInstructionToEnd({inst10, inst11, inst12});
     bb2->addInstructionToEnd({inst20, inst21, inst22, inst23});
     bb3->addInstructionToEnd(inst30);
@@ -65,7 +58,7 @@ void testGraphFactorial() {
     graph->addBasicBlock({bb0, bb1, bb2, bb3});
 
     /** TESTS */
-    assert((bb0->getInstructionIds() == std::vector<size_t>{0, 1, 2}));
+    assert((bb0->getInstructionIds() == std::vector<size_t>{11, 0, 1, 2}));
     assert((bb1->getInstructionIds() == std::vector<size_t>{3, 4, 5}));
     assert((bb2->getInstructionIds() == std::vector<size_t>{6, 7, 8, 9}));
     assert((bb3->getInstructionIds() == std::vector<size_t>{10}));
@@ -82,8 +75,8 @@ void testGraphFactorial() {
     
     delete graph;
     delete bb0; delete bb1; delete bb2; delete bb3;
-    delete inst00; delete inst01; delete inst02; delete inst10; delete inst11; delete inst12;
-    delete inst20; delete inst21; delete inst22; delete inst23; delete inst30;
+    delete inst0;  delete inst00; delete inst01; delete inst02; delete inst10; delete inst11; 
+    delete inst12; delete inst20; delete inst21; delete inst22; delete inst23; delete inst30;
 }
 
 int main() {

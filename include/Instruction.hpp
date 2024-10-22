@@ -15,7 +15,8 @@ enum class OpCode {
     CAST,
     CMP,
     MOV,
-    PHI
+    PHI,
+    PRM  // parameter
 };
 
 enum class InstType {
@@ -32,16 +33,17 @@ struct Instruction {
     size_t id_;
     InstType type_;
     OpCode opCode_;
-    std::vector<size_t> inputs_;
-    std::vector<size_t> users_;
+    std::vector<Instruction*> inputs_;
+    std::vector<Instruction*> users_;
 
-    Instruction(size_t id, InstType type, OpCode opCode, const std::vector<size_t> inputs = std::vector<size_t>{}, const std::vector<size_t> users = std::vector<size_t>{});
+    Instruction(size_t id, InstType type, OpCode opCode, const std::vector<Instruction*> inputs = std::vector<Instruction*>{}, const std::vector<Instruction*> users = std::vector<Instruction*>{});
 
-    void addInput(size_t id);
-    void addInput(const std::vector<size_t>& ids);
+    void addInput(Instruction* inst);
+    void addInput(const std::vector<Instruction*>& insts);
 
-    void addUser(size_t id);
-    void addUser(const std::vector<size_t>& ids);
+private:
+    void addUser(Instruction* inst);
+    void addUser(const std::vector<Instruction*>& insts);
 
 };
 
