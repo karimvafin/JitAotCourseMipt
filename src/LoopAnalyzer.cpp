@@ -85,6 +85,7 @@ namespace Compiler {
             std::vector<bool> vis(graph_->size(), false);
             vis[*it] = true;
             headerIt->second->blocks_.push_back(*it);
+            graph_->blocks_[*it]->loopIds_.push_back(headerIt->second->id_);
             std::stack<BasicBlock*> st;
             for (auto source : headerIt->second->backEdges_)
                 st.push(graph_->blocks_[source]);
@@ -102,6 +103,19 @@ namespace Compiler {
                         st.push(pred);
                     }
                 }
+            }
+        }
+    }
+
+    void LoopAnalyzer::createRootLoop() {
+        auto lastLoopId = loops_.back().id_;
+        loops_.push_back(Loop{});
+        loops_.back().id_ = loops_.size();
+        loops_.back().otherLoops_.insert(lastLoopId);
+        idLoop_[loops_.back().id_] = std::prev(loops_.end());
+        for (auto block : graph_->blocks_) {
+            if (block->loopIds_.empty()) {
+                loops_.back().blocks_.push_back(block->id_);
             }
         }
     }

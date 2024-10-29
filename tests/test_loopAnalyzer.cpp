@@ -17,6 +17,7 @@ void test1(bool verbose = false) {
     BasicBlock* F = new BasicBlock(5, graph);
     BasicBlock* G = new BasicBlock(6, graph);
     BasicBlock* H = new BasicBlock(7, graph);
+    BasicBlock* I = new BasicBlock(8, graph);
 
     /** Add predecessors and successors to basic blocks */
     A->addSuccessor(B, true);
@@ -34,15 +35,17 @@ void test1(bool verbose = false) {
     F->addSuccessor(G, true);
 
     G->addSuccessor(H, true);
+    G->addSuccessor(I, false);
 
     H->addSuccessor(F, true);
 
     /** Add basic blocks to graph */
-    graph->addBasicBlock({A, B, C, D, E, F, G, H});
+    graph->addBasicBlock({A, B, C, D, E, F, G, H, I});
 
     LoopAnalyzer loopAnalyzer(graph);
     loopAnalyzer.findBackEdges();
     loopAnalyzer.populateLoops();
+    loopAnalyzer.createRootLoop();
 
     if (verbose) {
         for (const auto& elem : loopAnalyzer.loops_) {
@@ -69,7 +72,7 @@ void test1(bool verbose = false) {
     // assert((res == std::vector<size_t>{0, 1, 5, 6, 4, 2, 3}));
 
     delete graph;
-    delete A; delete B; delete C; delete D; delete E; delete F; delete G; delete H;
+    delete A; delete B; delete C; delete D; delete E; delete F; delete G; delete H; delete I;
 }
 
 int main() {

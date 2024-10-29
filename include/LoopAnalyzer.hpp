@@ -21,6 +21,7 @@ struct LoopAnalyzer {
 
     void findBackEdges();
     void populateLoops();
+    void createRootLoop();
 };
     
 
