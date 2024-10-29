@@ -17,6 +17,7 @@ struct BasicBlock {
     std::vector<Instruction*> insts_;
     Graph* graph_;
     size_t id_;
+    std::vector<size_t> loopIds_;
 
     BasicBlock(size_t id, Graph* graph);
     void addInstructionToBegin(Instruction* inst);
