@@ -31,6 +31,7 @@ void test1(bool verbose = false) {
     E->addSuccessor(D, true);
 
     G->addSuccessor(D, true);
+    E->addSuccessor(B, false);
 
     /** Add basic blocks to graph */
     graph->addBasicBlock({A, B, C, F, E, D, G});
@@ -51,5 +52,5 @@ void test1(bool verbose = false) {
 }
 
 int main() {
-    test1();
+    test1(true);
 }

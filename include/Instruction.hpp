@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "Value.hpp"
+
 namespace Compiler {
 
 enum class OpCode {
@@ -16,6 +18,9 @@ enum class OpCode {
     CMP,
     MOV,
     PHI,
+    SHR,
+    OR,
+    CNST,
     PRM  // parameter
 };
 
@@ -28,24 +33,29 @@ enum class InstType {
     VOID
 };
 
-
 struct Instruction {
     size_t id_;
     InstType type_;
     OpCode opCode_;
     std::vector<Instruction*> inputs_;
     std::vector<Instruction*> users_;
+    Value value_;
 
-    Instruction(size_t id, InstType type, OpCode opCode, const std::vector<Instruction*> inputs = std::vector<Instruction*>{}, const std::vector<Instruction*> users = std::vector<Instruction*>{});
+    Instruction(size_t id, InstType type, OpCode opCode, Value value = Value{0}, const std::vector<Instruction*> inputs = std::vector<Instruction*>{}, const std::vector<Instruction*> users = std::vector<Instruction*>{});
 
     void addInput(Instruction* inst);
     void addInput(const std::vector<Instruction*>& insts);
+    void deleteInput(Instruction* inst);
+    void clearInput();
 
 private:
     void addUser(Instruction* inst);
     void addUser(const std::vector<Instruction*>& insts);
+    void deleteUser(Instruction* inst);
 
 };
+
+std::string opCode2Str(OpCode opCode);
 
 }  // namespace Compiler
 

@@ -15,11 +15,21 @@ void BasicBlock::addInstructionToBegin(const std::vector<Instruction*>& insts) {
 }
 
 void BasicBlock::addInstructionToEnd(Instruction* inst) {
+    if (inst->opCode_ == OpCode::PHI) {
+        phiInsts_.push_back(inst);
+        return;
+    }
     insts_.push_back(inst);
 }
 
 void BasicBlock::addInstructionToEnd(const std::vector<Instruction*>& insts) {
-    insts_.insert(insts_.end(), insts.begin(), insts.end());
+    for (auto inst: insts) {
+        if (inst->opCode_ == OpCode::PHI) {
+            phiInsts_.push_back(inst);
+        } else {
+            insts_.push_back(inst);
+        }
+    }
 }
 
 void BasicBlock::addInstruction(Instruction* inst, size_t pos) {
@@ -48,13 +58,23 @@ void BasicBlock::addSuccessor(BasicBlock* succ, bool succsType) {
     succ->addPredecessor(this);
 }
 
-std::vector<size_t> BasicBlock::getInstructionIds() {
+std::vector<size_t> BasicBlock::getInstructionIds() const {
     std::vector<size_t> res;
-    res.reserve(insts_.size());
+    res.reserve(phiInsts_.size() + insts_.size());
+    for (auto elem : phiInsts_) {
+        res.push_back(elem->id_);
+    }
     for (auto elem : insts_) {
         res.push_back(elem->id_);
     }
     return res;
+}
+
+bool BasicBlock::hasInstruction(size_t instId) const {
+    for (auto inst: insts_) {
+        if (inst->id_ == instId) return true;
+    }
+    return false;
 }
 
 }  // namespace Compiler

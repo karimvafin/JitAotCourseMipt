@@ -15,6 +15,7 @@ namespace Compiler {
         size_t id_;
         std::unordered_set<size_t> otherLoops_;
     };
+    
 }  // namespace Compiler
 
 #endif  // LOOP_HPP

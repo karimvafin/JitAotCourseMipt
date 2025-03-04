@@ -14,10 +14,12 @@ struct BasicBlock {
     BasicBlock* firstSuccs_;
     BasicBlock* secondSuccs_;
     Instruction* firstPhi_;
+    std::vector<Instruction*> phiInsts_;
     std::vector<Instruction*> insts_;
     Graph* graph_;
     size_t id_;
     std::vector<size_t> loopIds_;
+    std::vector<size_t> liveIn_;
 
     BasicBlock(size_t id, Graph* graph);
     void addInstructionToBegin(Instruction* inst);
@@ -27,7 +29,8 @@ struct BasicBlock {
     void addInstruction(Instruction* inst, size_t pos);
     void addInstruction(const std::vector<Instruction*>& insts, size_t pos);
     void addSuccessor(BasicBlock* succ, bool succsType);
-    std::vector<size_t> getInstructionIds();
+    bool hasInstruction(size_t instId) const;
+    std::vector<size_t> getInstructionIds() const;
 
 private:
     void addPredecessor(BasicBlock* pred);
