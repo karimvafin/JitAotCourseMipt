@@ -15,10 +15,16 @@ cd build && make
 
 ## Доступные тесты
 
-test_graph        (1 задание)
+test_graph           (1 задание, 1 семестр)
 
-test_RPO          (2 задание)
+test_RPO             (2 задание, 1 семестр)
 
-test_domTree      (2 задание)
+test_domTree         (2 задание, 1 семестр)
 
-test_loopAnalyzer (3 задание)
+test_loopAnalyzer    (3 задание, 1 семестр)
+
+test_constantFolding (2 задание, 2 семестр)
+
+test_peepholes       (2 задание, 2 семестр)
+
+
