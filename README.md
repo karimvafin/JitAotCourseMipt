@@ -27,4 +27,5 @@ test_constantFolding (2 задание, 2 семестр)
 
 test_peepholes       (2 задание, 2 семестр)
 
+test_staticInline    (3 задание, 2 семестр)
 
