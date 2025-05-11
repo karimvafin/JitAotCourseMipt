@@ -34,10 +34,10 @@ std::vector<size_t> DomTree::dfs(const Graph& graph) {
 std::vector<size_t> DomTree::dfsWithExcluded(const Graph& graph, int excludedId) {
     assert(excludedId < static_cast<int>(graph.size()));
     std::vector<size_t> res;
-    BasicBlock* startBlock = graph.blocks_[0];
+    const BasicBlock* startBlock = graph.blocks()[0];
     std::vector<bool> vis(graph.size(), false);
     if (excludedId >= 0) vis[excludedId] = true;
-    std::stack<BasicBlock*> st;
+    std::stack<const BasicBlock*> st;
     st.push(startBlock);
     while (!st.empty()) {
         auto blockPtr = st.top();

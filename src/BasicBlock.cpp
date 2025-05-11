@@ -4,7 +4,7 @@
 
 namespace Compiler {
 
-BasicBlock::BasicBlock(size_t id, Graph* graph) : id_(id), firstPhi_(nullptr), graph_(graph), firstSuccs_(nullptr), secondSuccs_(nullptr) {}
+BasicBlock::BasicBlock(Graph* graph) : firstPhi_(nullptr), graph_(graph) {}
 
 void BasicBlock::addInstructionToBegin(Instruction* inst) {
     insts_.insert(insts_.begin(), inst);
@@ -48,14 +48,37 @@ void BasicBlock::addInstruction(const std::vector<Instruction*>& insts, size_t p
     insts_.insert(insts_.begin() + pos, insts.begin(), insts.end());
 }
 
+void BasicBlock::removeInstruction(Instruction* inst) {
+    insts_.erase(std::remove(insts_.begin(), insts_.end(), inst));
+}
+
 void BasicBlock::addPredecessor(BasicBlock* pred) {
     preds_.push_back(pred);
 }
 
+void BasicBlock::removePredecessor(BasicBlock* pred) {
+    auto predIt = std::find(preds_.begin(), preds_.end(), pred);
+    if (predIt == preds_.end()) return;
+    preds_.erase(predIt);
+}
+
 void BasicBlock::addSuccessor(BasicBlock* succ, bool succsType) {
+    if (succ == nullptr) return;
     BasicBlock*& succsPtr = succsType ? firstSuccs_ : secondSuccs_;
     succsPtr = succ;
     succ->addPredecessor(this);
+}
+
+void BasicBlock::removeFirstSuccessor() {
+    if (firstSuccs_ == nullptr) return;
+    firstSuccs_->removePredecessor(this);
+    firstSuccs_ = nullptr;
+}
+
+void BasicBlock::removeSecondSuccessor() {
+    if (secondSuccs_ == nullptr) return;
+    secondSuccs_->removePredecessor(this);
+    secondSuccs_ = nullptr;
 }
 
 std::vector<size_t> BasicBlock::getInstructionIds() const {

@@ -6,30 +6,32 @@ using namespace Compiler;
 
 void testGraphFactorial() {
     /** Graph construction */
-    Graph* graph = new Graph();
+    Indexer blockIndexer;
+    Indexer instIndexer;
+    Graph* graph = new Graph(blockIndexer, instIndexer);
 
     /** Basic Blocks construction */
-    BasicBlock* bb0 = new BasicBlock(0, graph); // start
-    BasicBlock* bb1 = new BasicBlock(1, graph); // cmp
-    BasicBlock* bb2 = new BasicBlock(2, graph); // mult
-    BasicBlock* bb3 = new BasicBlock(3, graph); // ret
+    BasicBlock* bb0 = graph->createStartBlock(); // start
+    BasicBlock* bb1 = graph->createBasicBlock(); // cmp
+    BasicBlock* bb2 = graph->createBasicBlock(); // mult
+    BasicBlock* bb3 = graph->createBasicBlock(); // ret
 
     /** Instructions construction */
-    Instruction* inst0  = new Instruction(11, InstType::S32, OpCode::PRM);
-    Instruction* inst00 = new Instruction(0, InstType::U64, OpCode::MOV);  // res1 = 1
-    Instruction* inst01 = new Instruction(1, InstType::U64, OpCode::MOV);  // i1 = 2
-    Instruction* inst02 = new Instruction(2, InstType::U64, OpCode::CAST); // (u64)n1
+    Instruction* inst0  = graph->createInst(InstType::S32, OpCode::PRM);
+    Instruction* inst00 = graph->createInst(InstType::U64, OpCode::MOV);  // res1 = 1
+    Instruction* inst01 = graph->createInst(InstType::U64, OpCode::MOV);  // i1 = 2
+    Instruction* inst02 = graph->createInst(InstType::U64, OpCode::CAST); // (u64)n1
 
-    Instruction* inst10 = new Instruction(3, InstType::U32, OpCode::PHI);  // i3 = phi(i1, i2)
-    Instruction* inst11 = new Instruction(4, InstType::B, OpCode::CMP);    // b0 = cmp(i3, n1)
-    Instruction* inst12 = new Instruction(5, InstType::VOID, OpCode::JMPC); 
+    Instruction* inst10 = graph->createInst(InstType::U32, OpCode::PHI);  // i3 = phi(i1, i2)
+    Instruction* inst11 = graph->createInst(InstType::B, OpCode::CMP);    // b0 = cmp(i3, n1)
+    Instruction* inst12 = graph->createInst(InstType::VOID, OpCode::JMPC); 
 
-    Instruction* inst20 = new Instruction(6, InstType::U64, OpCode::PHI);  // res3 = phi(res1, res2)
-    Instruction* inst21 = new Instruction(7, InstType::U64, OpCode::MUL);  // res2 = res3 * i3
-    Instruction* inst22 = new Instruction(8, InstType::U32, OpCode::ADD);  // i2 = i3 + 1
-    Instruction* inst23 = new Instruction(9, InstType::VOID, OpCode::JMP);
+    Instruction* inst20 = graph->createInst(InstType::U64, OpCode::PHI);  // res3 = phi(res1, res2)
+    Instruction* inst21 = graph->createInst(InstType::U64, OpCode::MUL);  // res2 = res3 * i3
+    Instruction* inst22 = graph->createInst(InstType::U32, OpCode::ADD);  // i2 = i3 + 1
+    Instruction* inst23 = graph->createInst(InstType::VOID, OpCode::JMP);
 
-    Instruction* inst30 = new Instruction(10, InstType::U64, OpCode::RET); // return res3
+    Instruction* inst30 = graph->createInst(InstType::U64, OpCode::RET); // return res3
 
     /** Add inputs */
     inst02->addInput(inst0);
@@ -54,14 +56,11 @@ void testGraphFactorial() {
 
     bb2->addSuccessor(bb1, true);
 
-    /** Add basic blocks to graph */
-    graph->addBasicBlock({bb0, bb1, bb2, bb3});
-
     /** TESTS */
-    assert((bb0->getInstructionIds() == std::vector<size_t>{11, 0, 1, 2}));
-    assert((bb1->getInstructionIds() == std::vector<size_t>{3, 4, 5}));
-    assert((bb2->getInstructionIds() == std::vector<size_t>{6, 7, 8, 9}));
-    assert((bb3->getInstructionIds() == std::vector<size_t>{10}));
+    assert((bb0->getInstructionIds() == std::vector<size_t>{0, 1, 2, 3}));
+    assert((bb1->getInstructionIds() == std::vector<size_t>{4, 5, 6}));
+    assert((bb2->getInstructionIds() == std::vector<size_t>{7, 8, 9, 10}));
+    assert((bb3->getInstructionIds() == std::vector<size_t>{11}));
 
     assert((bb0->preds_ == std::vector<BasicBlock*>{}));
     assert((bb0->firstSuccs_ == bb1));
@@ -74,9 +73,6 @@ void testGraphFactorial() {
     assert((bb3->firstSuccs_ == nullptr));
     
     delete graph;
-    delete bb0; delete bb1; delete bb2; delete bb3;
-    delete inst0;  delete inst00; delete inst01; delete inst02; delete inst10; delete inst11; 
-    delete inst12; delete inst20; delete inst21; delete inst22; delete inst23; delete inst30;
 }
 
 int main() {

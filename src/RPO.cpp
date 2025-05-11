@@ -10,7 +10,7 @@ std::vector<size_t> RPO(const Graph& graph) {
     std::vector<size_t> rpoVector(blocksCount);
     std::vector<bool> vis(blocksCount, false);
 
-    RPOImpl(graph.blocks_[0], blocksCount, rpoVector, vis);
+    RPOImpl(graph.startBlock(), blocksCount, rpoVector, vis);
 
     return rpoVector;
 }

@@ -6,16 +6,18 @@
 using namespace Compiler;
 
 void test1(bool verbose = false) {
-    Graph* graph = new Graph();
+    Indexer blockIndexer;
+    Indexer instIndexer;
+    Graph* graph = new Graph(blockIndexer, instIndexer);
 
     /** Basic Blocks construction */
-    BasicBlock* A = new BasicBlock(0, graph);
-    BasicBlock* B = new BasicBlock(1, graph);
-    BasicBlock* C = new BasicBlock(2, graph);
-    BasicBlock* F = new BasicBlock(3, graph);
-    BasicBlock* E = new BasicBlock(4, graph);
-    BasicBlock* D = new BasicBlock(5, graph);
-    BasicBlock* G = new BasicBlock(6, graph); 
+    BasicBlock* A = graph->createStartBlock();
+    BasicBlock* B = graph->createBasicBlock();
+    BasicBlock* C = graph->createBasicBlock();
+    BasicBlock* F = graph->createBasicBlock();
+    BasicBlock* E = graph->createBasicBlock();
+    BasicBlock* D = graph->createBasicBlock();
+    BasicBlock* G = graph->createBasicBlock(); 
 
     /** Add predecessors and successors to basic blocks */
     A->addSuccessor(B, true);
@@ -31,9 +33,6 @@ void test1(bool verbose = false) {
     E->addSuccessor(D, true);
 
     G->addSuccessor(D, true);
-
-    /** Add basic blocks to graph */
-    graph->addBasicBlock({A, B, C, F, E, D, G});
 
     auto res = DomTree::createDomTree(*graph);
 
@@ -54,24 +53,24 @@ void test1(bool verbose = false) {
     assert((res.tree_[6] == std::vector<size_t>{}));
 
     delete graph;
-    delete A; delete B; delete C; delete F; delete E; delete D; delete G;
 }
 
 void test2(bool verbose = false) {
-    Graph* graph = new Graph();
+    Indexer bi, ii;
+    Graph* graph = new Graph(bi, ii);
 
     /** Basic Blocks construction */
-    BasicBlock* A = new BasicBlock(0, graph);
-    BasicBlock* B = new BasicBlock(1, graph);
-    BasicBlock* C = new BasicBlock(2, graph);
-    BasicBlock* D = new BasicBlock(3, graph);
-    BasicBlock* E = new BasicBlock(4, graph);
-    BasicBlock* F = new BasicBlock(5, graph);
-    BasicBlock* G = new BasicBlock(6, graph);
-    BasicBlock* H = new BasicBlock(7, graph); 
-    BasicBlock* I = new BasicBlock(8, graph);  
-    BasicBlock* J = new BasicBlock(9, graph); 
-    BasicBlock* K = new BasicBlock(10, graph);
+    BasicBlock* A = graph->createStartBlock();
+    BasicBlock* B = graph->createBasicBlock();
+    BasicBlock* C = graph->createBasicBlock();
+    BasicBlock* D = graph->createBasicBlock();
+    BasicBlock* E = graph->createBasicBlock();
+    BasicBlock* F = graph->createBasicBlock();
+    BasicBlock* G = graph->createBasicBlock();
+    BasicBlock* H = graph->createBasicBlock();
+    BasicBlock* I = graph->createBasicBlock();  
+    BasicBlock* J = graph->createBasicBlock(); 
+    BasicBlock* K = graph->createBasicBlock();
 
     /** Add predecessors and successors to basic blocks */
     A->addSuccessor(B, true);
@@ -98,9 +97,6 @@ void test2(bool verbose = false) {
 
     J->addSuccessor(C, true);
 
-    /** Add basic blocks to graph */
-    graph->addBasicBlock({A, B, C, D, E, F, G, H, I, J, K});
-
     auto res = DomTree::createDomTree(*graph);
 
     if (verbose)
@@ -124,22 +120,22 @@ void test2(bool verbose = false) {
     assert((res.tree_[10] == std::vector<size_t>{}));
 
     delete graph;
-    delete A; delete B; delete C; delete D; delete E; delete F; delete G; delete H; delete I; delete J; delete K;
 }
 
 void test3(bool verbose = false) {
-    Graph* graph = new Graph();
+    Indexer bi, ii;
+    Graph* graph = new Graph(bi, ii);
 
     /** Basic Blocks construction */
-    BasicBlock* A = new BasicBlock(0, graph);
-    BasicBlock* B = new BasicBlock(1, graph);
-    BasicBlock* C = new BasicBlock(2, graph);
-    BasicBlock* D = new BasicBlock(3, graph);
-    BasicBlock* E = new BasicBlock(4, graph);
-    BasicBlock* F = new BasicBlock(5, graph);
-    BasicBlock* G = new BasicBlock(6, graph);
-    BasicBlock* H = new BasicBlock(7, graph); 
-    BasicBlock* I = new BasicBlock(8, graph);  
+    BasicBlock* A = graph->createStartBlock();
+    BasicBlock* B = graph->createBasicBlock();
+    BasicBlock* C = graph->createBasicBlock();
+    BasicBlock* D = graph->createBasicBlock();
+    BasicBlock* E = graph->createBasicBlock();
+    BasicBlock* F = graph->createBasicBlock();
+    BasicBlock* G = graph->createBasicBlock();
+    BasicBlock* H = graph->createBasicBlock(); 
+    BasicBlock* I = graph->createBasicBlock();  
 
     /** Add predecessors and successors to basic blocks */
     A->addSuccessor(B, true);
@@ -163,9 +159,6 @@ void test3(bool verbose = false) {
     H->addSuccessor(G, true);
     H->addSuccessor(I, false);
 
-    /** Add basic blocks to graph */
-    graph->addBasicBlock({A, B, C, D, E, F, G, H, I});
-
     auto res = DomTree::createDomTree(*graph);
 
     if (verbose)
@@ -187,7 +180,6 @@ void test3(bool verbose = false) {
     assert((res.tree_[8] == std::vector<size_t>{}));
 
     delete graph;
-    delete A; delete B; delete C; delete D; delete E; delete F; delete G; delete H; delete I;
 }
 
 int main() {

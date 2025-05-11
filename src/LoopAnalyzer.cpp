@@ -19,7 +19,7 @@ namespace Compiler {
         // DFS
         std::vector<Marker> markers(graph_->size());
 
-        BasicBlock* startBlock = graph_->blocks_[0];
+        BasicBlock* startBlock = graph_->startBlock();
         std::vector<bool> vis(graph_->size(), false);
         std::stack<BasicBlock*> st;
         st.push(startBlock);
@@ -85,10 +85,10 @@ namespace Compiler {
             std::vector<bool> vis(graph_->size(), false);
             vis[*it] = true;
             headerIt->second->blocks_.push_back(*it);
-            graph_->blocks_[*it]->loopIds_.push_back(headerIt->second->id_);
+            graph_->blocks()[*it]->loopIds_.push_back(headerIt->second->id_);
             std::stack<BasicBlock*> st;
             for (auto source : headerIt->second->backEdges_)
-                st.push(graph_->blocks_[source]);
+                st.push(graph_->blocks()[source]);
             while (!st.empty()) {
                 auto blockPtr = st.top();
                 st.pop();
@@ -113,7 +113,7 @@ namespace Compiler {
         loops_.back().id_ = loops_.size();
         loops_.back().otherLoops_.insert(lastLoopId);
         idLoop_[loops_.back().id_] = std::prev(loops_.end());
-        for (auto block : graph_->blocks_) {
+        for (auto block : graph_->blocks()) {
             if (block->loopIds_.empty()) {
                 loops_.back().blocks_.push_back(block->id_);
             }

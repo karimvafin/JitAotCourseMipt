@@ -21,7 +21,8 @@ enum class OpCode {
     SHR,
     OR,
     CNST,
-    PRM  // parameter
+    PRM,
+    CALL
 };
 
 enum class InstType {
@@ -33,19 +34,27 @@ enum class InstType {
     VOID
 };
 
+unsigned int getInstTypeSize(InstType type);
+
+class Function;
+
 struct Instruction {
     size_t id_;
     InstType type_;
     OpCode opCode_;
     std::vector<Instruction*> inputs_;
     std::vector<Instruction*> users_;
-    Value value_;
+    Value* value_ = nullptr;
+    Function* callee_ = nullptr;
 
-    Instruction(size_t id, InstType type, OpCode opCode, Value value = Value{0}, const std::vector<Instruction*> inputs = std::vector<Instruction*>{}, const std::vector<Instruction*> users = std::vector<Instruction*>{});
+    Instruction(size_t id, InstType type, OpCode opCode);
+    Instruction(size_t id, InstType type, OpCode opCode, Value* value);
+    Instruction(size_t id, InstType type, Function* callee);
 
     void addInput(Instruction* inst);
     void addInput(const std::vector<Instruction*>& insts);
     void deleteInput(Instruction* inst);
+    void swapInput(Instruction* oldInst, Instruction* newInst);
     void clearInput();
 
 private:

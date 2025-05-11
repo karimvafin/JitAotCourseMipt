@@ -6,18 +6,20 @@
 using namespace Compiler;
 
 void test1(bool verbose = false) {
-    Graph* graph = new Graph();
+    Indexer bi;     
+    Indexer ii;
+    Graph* graph = new Graph(bi, ii);
 
     /** Basic Blocks construction */
-    BasicBlock* A = new BasicBlock(0, graph);
-    BasicBlock* B = new BasicBlock(1, graph);
-    BasicBlock* C = new BasicBlock(2, graph);
-    BasicBlock* D = new BasicBlock(3, graph);
-    BasicBlock* E = new BasicBlock(4, graph);
-    BasicBlock* F = new BasicBlock(5, graph);
-    BasicBlock* G = new BasicBlock(6, graph);
-    BasicBlock* H = new BasicBlock(7, graph);
-    BasicBlock* I = new BasicBlock(8, graph);
+    BasicBlock* A = graph->createStartBlock();
+    BasicBlock* B = graph->createBasicBlock();
+    BasicBlock* C = graph->createBasicBlock();
+    BasicBlock* D = graph->createBasicBlock();
+    BasicBlock* E = graph->createBasicBlock();
+    BasicBlock* F = graph->createBasicBlock();
+    BasicBlock* G = graph->createBasicBlock();
+    BasicBlock* H = graph->createBasicBlock();
+    BasicBlock* I = graph->createBasicBlock();
 
     /** Add predecessors and successors to basic blocks */
     A->addSuccessor(B, true);
@@ -39,9 +41,6 @@ void test1(bool verbose = false) {
 
     H->addSuccessor(F, true);
 
-    /** Add basic blocks to graph */
-    graph->addBasicBlock({A, B, C, D, E, F, G, H, I});
-
     LoopAnalyzer loopAnalyzer(graph);
     loopAnalyzer.findBackEdges();
     loopAnalyzer.populateLoops();
@@ -72,20 +71,20 @@ void test1(bool verbose = false) {
     // assert((res == std::vector<size_t>{0, 1, 5, 6, 4, 2, 3}));
 
     delete graph;
-    delete A; delete B; delete C; delete D; delete E; delete F; delete G; delete H; delete I;
 }
 
 void test2(bool verbose = false) {
-    Graph* graph = new Graph();
+    Indexer bi, ii;
+    Graph* graph = new Graph(bi, ii);
 
     /** Basic Blocks construction */
-    BasicBlock* A = new BasicBlock(0, graph);
-    BasicBlock* B = new BasicBlock(1, graph);
-    BasicBlock* C = new BasicBlock(2, graph);
-    BasicBlock* D = new BasicBlock(3, graph);
-    BasicBlock* E = new BasicBlock(4, graph);
-    BasicBlock* F = new BasicBlock(5, graph);
-    BasicBlock* G = new BasicBlock(6, graph); 
+    BasicBlock* A = graph->createStartBlock();
+    BasicBlock* B = graph->createBasicBlock();
+    BasicBlock* C = graph->createBasicBlock();
+    BasicBlock* D = graph->createBasicBlock();
+    BasicBlock* E = graph->createBasicBlock();
+    BasicBlock* F = graph->createBasicBlock();
+    BasicBlock* G = graph->createBasicBlock(); 
 
     /** Add predecessors and successors to basic blocks */
     A->addSuccessor(B, true);
@@ -103,9 +102,6 @@ void test2(bool verbose = false) {
 
     G->addSuccessor(D, true);
 
-    /** Add basic blocks to graph */
-    graph->addBasicBlock({A, B, C, F, E, D, G});
-
     LoopAnalyzer loopAnalyzer(graph);
     loopAnalyzer.findBackEdges();
     loopAnalyzer.populateLoops();
@@ -136,7 +132,6 @@ void test2(bool verbose = false) {
     // assert((res == std::vector<size_t>{0, 1, 5, 6, 4, 2, 3}));
 
     delete graph;
-    delete A; delete B; delete C; delete D; delete E; delete F; delete G;
 }
 
 int main() {

@@ -8,30 +8,30 @@ using namespace Compiler;
 
 void test1(bool verbose = false) {
     /** Graph construction */
-    Graph* graph = new Graph();
+    Indexer bi, ii;
+    Graph* graph = new Graph(bi, ii);
 
     /** Basic Blocks construction */
-    BasicBlock* bb0 = new BasicBlock(0, graph); // start
-    BasicBlock* bb1 = new BasicBlock(1, graph); // true
-    BasicBlock* bb2 = new BasicBlock(2, graph); // false
-    BasicBlock* bb3 = new BasicBlock(3, graph); // ret
+    BasicBlock* bb0 = graph->createStartBlock(); // start
+    BasicBlock* bb1 = graph->createBasicBlock(); // true
+    BasicBlock* bb2 = graph->createBasicBlock(); // false
+    BasicBlock* bb3 = graph->createBasicBlock(); // ret
 
     /** Instructions construction */
-    int i = 0;
-    Instruction* inst00 = new Instruction(i++, InstType::S32, OpCode::PRM);  // int a = param1;
-    Instruction* inst01 = new Instruction(i++, InstType::S32, OpCode::MOV);  // int c = 1;
-    Instruction* inst02 = new Instruction(i++, InstType::B, OpCode::CMP);    // bool q = a > c;
-    Instruction* inst03 = new Instruction(i++, InstType::VOID, OpCode::JMPC); 
+    Instruction* inst00 = graph->createInst(InstType::S32, OpCode::PRM);  // int a = param1;
+    Instruction* inst01 = graph->createInst(InstType::S32, OpCode::MOV);  // int c = 1;
+    Instruction* inst02 = graph->createInst(InstType::B, OpCode::CMP);    // bool q = a > c;
+    Instruction* inst03 = graph->createInst(InstType::VOID, OpCode::JMPC); 
 
-    Instruction* inst10 = new Instruction(i++, InstType::S32, OpCode::MOV);  // int b1 = 2;
-    Instruction* inst11 = new Instruction(i++, InstType::VOID, OpCode::JMP); 
+    Instruction* inst10 = graph->createInst(InstType::S32, OpCode::MOV);  // int b1 = 2;
+    Instruction* inst11 = graph->createInst(InstType::VOID, OpCode::JMP); 
 
-    Instruction* inst20 = new Instruction(i++, InstType::S32, OpCode::MOV);  // int b2 = 3;
-    Instruction* inst21 = new Instruction(i++, InstType::VOID, OpCode::JMP); 
+    Instruction* inst20 = graph->createInst(InstType::S32, OpCode::MOV);  // int b2 = 3;
+    Instruction* inst21 = graph->createInst(InstType::VOID, OpCode::JMP); 
 
-    Instruction* inst30 = new Instruction(i++, InstType::S32, OpCode::PHI);  // int b = phi(b1, b2);
-    Instruction* inst31 = new Instruction(i++, InstType::S32, OpCode::ADD);  // int r = a + b;
-    Instruction* inst32 = new Instruction(i++, InstType::S32, OpCode::RET);  // return r;
+    Instruction* inst30 = graph->createInst(InstType::S32, OpCode::PHI);  // int b = phi(b1, b2);
+    Instruction* inst31 = graph->createInst(InstType::S32, OpCode::ADD);  // int r = a + b;
+    Instruction* inst32 = graph->createInst(InstType::S32, OpCode::RET);  // return r;
 
     /** Add inputs */
     inst02->addInput({inst00, inst01});
@@ -54,9 +54,6 @@ void test1(bool verbose = false) {
 
     bb2->addSuccessor(bb3, true);
 
-    /** Add basic blocks to graph */
-    graph->addBasicBlock({bb0, bb1, bb2, bb3});
-
     /** TESTS */
     assert((bb0->getInstructionIds() == std::vector<size_t>{0, 1, 2, 3}));
     assert((bb1->getInstructionIds() == std::vector<size_t>{4, 5}));
@@ -74,9 +71,6 @@ void test1(bool verbose = false) {
     }
     
     delete graph;
-    delete bb0; delete bb1; delete bb2; delete bb3;
-    delete inst00; delete inst01; delete inst02; delete inst03; delete inst10; delete inst11; 
-    delete inst20; delete inst21; delete inst30; delete inst31; delete inst32; 
 }
 
 int main() {
